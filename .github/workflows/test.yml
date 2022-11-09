@@ -27,14 +27,14 @@ jobs:
     - run: nix-build release.nix
     - run: nix-shell --command 'echo "Build Completed"'
 
-    - name: get secrets - codecov
+    - name: get secrets - nix-cache
       uses: hashicorp/vault-action@v2.4.2
       if: github.ref == 'refs/heads/main'
       with:
         url: https://vault.sierrasoftworks.com
         method: jwt
         path: github-actions
-        role: pull_request
+        role: build
         jwtGithubAudience: https://vault.sierrasoftworks.com
         secrets: |
           secrets/data/repos/SierraSoftworks/nixpkgs/signing-key private_key | NIX_SIGNING_KEY;
