@@ -6,6 +6,11 @@ jobs:
   build:
     name: "Build"
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
     - uses: actions/checkout@v3
     - uses: cachix/install-nix-action@v18
@@ -21,3 +26,24 @@ jobs:
         extraPullNames: nix-community
     - run: nix-build release.nix
     - run: nix-shell --command 'echo "Build Completed"'
+
+    - name: get secrets - codecov
+      uses: hashicorp/vault-action@v2.4.2
+      if: github.ref == 'refs/heads/main'
+      with:
+        url: https://vault.sierrasoftworks.com
+        method: jwt
+        path: github-actions
+        role: pull_request
+        jwtGithubAudience: https://vault.sierrasoftworks.com
+        secrets: |
+          secrets/data/repos/SierraSoftworks/nixpkgs/signing-key private_key | NIX_SIGNING_KEY;
+    - run: |
+        nix --extra-experimental-features nix-command --extra-experimental-features flakes copy --to file:///tmp/cache nixpkgs#grey nixpkgs#git-tool
+        
+        # Signing of packages
+        [[ -z "${NIX_SIGNING_KEY}" ]] && echo "No signing key imported, skipping signing" || { echo "${NIX_SIGNING_KEY}" > ./nix-cache-key.sec; }
+        if [ -f ./nix-cache-key.sec ];
+          nix --extra-experimental-features nix-command --extra-experimental-features flakes store sign -k ./nix-cache-key.sec --store file:///tmp/cache --all
+          rm ./nix-cache-key.sec
+        fi
