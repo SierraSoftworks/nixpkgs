@@ -15,5 +15,6 @@ let
     build = path: { targets ? defaultTargets }:
         lib.genAttrs targets builder;
 in {
+    git-tool = build ["git-tool"];
     grey = build ["grey"];
 }
