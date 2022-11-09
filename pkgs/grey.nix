@@ -11,7 +11,9 @@ rustPlatform.buildRustPackage rec {
     sha256 = "4Qj3c6CmkNlR1dp+WyvS9UlsydcN+rvo31gyRN4BKns=";
   };
 
-  buildInputs = [pkgs.protobuf pkgs.openssl pkgs.pkg-config]
+  nativeBuildInputs = [pkgs.protobuf pkgs.pkg-config];
+
+  buildInputs = [pkgs.openssl]
     ++ lib.optionals pkgs.stdenv.isDarwin [pkgs.darwin.apple_sdk.frameworks.Security];
 
   PROTOC = "${pkgs.protobuf}/bin/protoc";
