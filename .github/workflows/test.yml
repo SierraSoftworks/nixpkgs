@@ -15,8 +15,6 @@ jobs:
           trusted-public-keys = nix.sierrasoftworks.com:3T9XyoyEc7iw8BQNmXM2QPk2FQeW5Zo6KbLytdM+izY= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
           substituters = https://nix.sierrasoftworks.com https://cache.nixos.org/
     - uses: cachix/cachix-action@v12
-      # Only run this on the main branch
-      if: github.ref == 'refs/heads/main'
       with:
         name: sierrasoftworks
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
