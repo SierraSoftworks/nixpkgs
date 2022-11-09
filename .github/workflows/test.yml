@@ -1,0 +1,18 @@
+name: "Test"
+on:
+  pull_request:
+  push:
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v18
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        extra_nix_config: |
+          trusted-public-keys = nix.sierrasoftworks.com:3T9XyoyEc7iw8BQNmXM2QPk2FQeW5Zo6KbLytdM+izY= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+          substituters = https://nix.sierrasoftworks.com https://cache.nixos.org/
+    - run: nix-build
+    - run: nix-shell --command 'echo "Build Completed"'
