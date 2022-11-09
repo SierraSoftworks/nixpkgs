@@ -11,6 +11,8 @@ rustPlatform.buildRustPackage rec {
     sha256 = "4Qj3c6CmkNlR1dp+WyvS9UlsydcN+rvo31gyRN4BKns=";
   };
 
+  doCheck = false;
+
   nativeBuildInputs = [pkgs.protobuf pkgs.pkg-config];
 
   buildInputs = [pkgs.openssl]
